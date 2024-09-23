@@ -13,7 +13,7 @@ def open_read_file(file):
 
     f = open(file, "r")
     print(type(f))
-    print(f"This is file:",f)
+    print(f"This is file - further test:",f)
 
     cnt = 0
 
