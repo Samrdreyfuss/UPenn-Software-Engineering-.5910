@@ -13,6 +13,7 @@ def open_read_file(file):
 
     f = open(file, "r")
     print(type(f))
+    print(f"This is file:",f)
 
     cnt = 0
 
@@ -25,6 +26,8 @@ def open_read_file(file):
         cnt += 1
 
     f.close()
+
+    # update test
 
 
 def surround_block(tag, text):
