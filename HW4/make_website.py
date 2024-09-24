@@ -1,5 +1,7 @@
 #from doc.pycurl.examples.retriever import filename
 
+# sources:
+# https://www.geeksforgeeks.org/python-string-find/
 
 def open_read_file(file):
     """
@@ -76,10 +78,21 @@ def detect_the_name(converted_file):
     return name
 
 
-"""
+
 def detect_the_email(converted_file):
 
+    # the below logic searches each line for the @ character and records the line its found on
+    count = 1
+    for line in converted_file:
+        count += 1
+        if '@' in line:
+            line_found = count
 
+    # confirm the email address is valid:
+
+
+
+"""
 
 def detect_the_course(converted_file):
 
