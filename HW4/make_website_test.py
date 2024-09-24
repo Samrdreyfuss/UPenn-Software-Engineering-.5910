@@ -4,6 +4,11 @@ from make_website import *
 
 class MakeWebsite_Test(unittest.TestCase):
 
+    def test_open_read_file(self):
+        # test
+
+
+
     def test_surround_block(self):
         # test text with surrounding h1 tags
         self.assertEqual("<h1>Eagles</h1>", surround_block('h1', 'Eagles'))

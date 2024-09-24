@@ -1,4 +1,4 @@
-from doc.pycurl.examples.retriever import filename
+#from doc.pycurl.examples.retriever import filename
 
 
 def open_read_file(file):
@@ -15,9 +15,10 @@ def open_read_file(file):
 
     f = open(file, 'r')
     lines = f.readlines()
+    file.close()
     return lines
 
-    f.close()
+
 
     """
         f = open(file, "r")
@@ -53,10 +54,32 @@ def open_read_file(file):
     # update test
     """
 
-"""
-def detect_the_name(converted_file):
 
+def detect_the_name(converted_file):
+    # extract first line of text
+    name = converted_file[0]
+    # strip '\n' used for spacing
+    name = name.strip()
+
+    # strip empty spaces
+    name = name.strip(' ')
+
+    # confirm name is valid (not lowercase) via try/except
+    # if name is invalid, return "Invalid Name"
+    try:
+        if name[0].islower():
+            first_line = 'Invalid Name'
+            raise ValueError("The first letter in the name is not uppercase.")
+    except ValueError as error:
+        print(error)
+
+    return name
+
+
+"""
 def detect_the_email(converted_file):
+
+
 
 def detect_the_course(converted_file):
 
@@ -109,7 +132,7 @@ def generate_html(txt_input_file, html_output_file):
 def main():
 
     file = 'resume.txt'
-    open_read_file(file)
+    test = open_read_file(file)
 
 
     # DO NOT REMOVE OR UPDATE THIS CODE
