@@ -1,34 +1,68 @@
+from doc.pycurl.examples.retriever import filename
+
 
 def open_read_file(file):
     """
     Functionality:
-    Opens up file and reads each line of file
+    Opens up file and reads each line of file into a list
 
     Arguments:
-    file: text file
+    file: text file name
 
     Returns:
-
+    lines: list of lines
     """
 
-    f = open(file, "r")
-    print(type(f))
-    print(f"This is file - further test:",f)
-
-    cnt = 0
-
-    # reads and prints each line in f (file) while there is a line to read
-    line = f.readline()
-    while line:
-        print(line, end='')
-        line = f.readline()
-
-        cnt += 1
+    f = open(file, 'r')
+    lines = f.readlines()
+    return lines
 
     f.close()
 
-    # update test
+    """
+        f = open(file, "r")
 
+        # create empty dictionary
+        my_dict = {}
+
+        cnt = 0
+
+        # reads and prints each line in f (file) while there is a line to read
+        line = f.readline()
+
+        while line:
+            print(line, end='')
+            line = f.readline()
+
+            line_lst = line.strip()
+
+            # skip line if missing value
+            if len(line_lst) <= 1:
+                continue
+
+            key = line_lst[0].strip()
+            value = line_lst[1].strip()
+
+            # add key and value to dictionary
+            my_dict[key] = my_dict.get(key, 0) + value
+
+            print("This is the dictionary:", dict)
+
+        f.close()
+
+    # update test
+    """
+
+"""
+def detect_the_name(converted_file):
+
+def detect_the_email(converted_file):
+
+def detect_the_course(converted_file):
+
+def detect_the_project(converted_file):
+    
+"""
 
 def surround_block(tag, text):
     """
@@ -74,7 +108,9 @@ def generate_html(txt_input_file, html_output_file):
 
 def main():
 
-    open_read_file('resume.txt')
+    file = 'resume.txt'
+    open_read_file(file)
+
 
     # DO NOT REMOVE OR UPDATE THIS CODE
     # generate resume.html file from provided sample resume.txt
