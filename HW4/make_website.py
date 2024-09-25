@@ -84,51 +84,59 @@ def detect_the_name(converted_file):
 
 def detect_the_email(converted_file):
 
-    #print(converted_file)
-    # the below logic searches each line for the @ character and records the line its found on
-    #count = 0
-    #for line in converted_file:
-        #count += 1
-
-    #print("This is the line where it was found",line_found_number)
-
-    #print(converted_file[6])
-
-    # confirm the email address is valid:
-    #email_line = converted_file[line_found_number]
-
     # within the email list, extract the specific email address by obtaining the word with @ in it via list comprehension
     character_to_find = '@'
     email_address = [s for s in converted_file if character_to_find in s]
     #strip out the '\n' value
     email_address = email_address[0].strip()
+
+    # strip out any white spaces per instructions
+    email_address = email_address.strip(' ')
     print(email_address)
 
     try:
+        # first, confirm if the email address includes .com or .edu in title, otherwise throw an error
         if not ('.com' in email_address or '.edu' in email_address):
             raise ValueError("The email does not contain a .com or .edu")
 
+        # second, loop through the email adress and confirm if @ is found, then look to the next character to confirm
+        # if the value is a lowercase value, otherwise generate an error
         at_char_found = False
-        for i in range(len(email_address) - 1):
-            if email_address[i] == '@':
+        for char in range(len(email_address) - 1):
+            if email_address[char] == '@':
                 at_char_found = True
-                if not email_address[i + 1].islower():
+                if not email_address[char + 1].islower():
                     raise ValueError("The email does not contain a lowercase letter after @")
 
         if not at_char_found:
             raise ValueError("The email contains no @ character")
 
+        # third, check if there are any numbers/ints in the email address
+        # If found, raise an error
         if any(char.isdigit() for char in email_address):
             raise ValueError("The email is not free of numbers or integers")
 
-        print('Email is Valid!!!')
+        print('The Email Found is Valid!!!')
 
     except:
         raise ValueError("There Appears to be an error in the email address.")
 
-"""
+
 
 def detect_the_course(converted_file):
+
+    # the below logic searches each line for the @ character and records the line its found on
+    count = 0
+    for line in converted_file:
+        count += 1
+        if 'Courses' in line:
+            line_found_number = count
+
+    print("This is the line where it was found", line_found_number)
+
+    print(converted_file[line_found_number - 1])
+
+"""
 
 def detect_the_project(converted_file):
     
@@ -180,7 +188,7 @@ def main():
 
     file = 'resume.txt'
     converted_file = open_read_file(file)
-    detect_the_email(converted_file)
+    detect_the_course(converted_file)
 
 
 
