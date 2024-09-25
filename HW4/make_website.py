@@ -2,6 +2,8 @@
 
 # sources:
 # https://www.geeksforgeeks.org/python-string-find/
+# https://www.geeksforgeeks.org/python-get-the-string-after-occurrence-of-given-substring/
+
 
 def open_read_file(file):
     """
@@ -17,7 +19,7 @@ def open_read_file(file):
 
     f = open(file, 'r')
     lines = f.readlines()
-    file.close()
+    f.close()
     return lines
 
 
@@ -79,18 +81,50 @@ def detect_the_name(converted_file):
 
 
 
+
 def detect_the_email(converted_file):
 
+    #print(converted_file)
     # the below logic searches each line for the @ character and records the line its found on
-    count = 1
-    for line in converted_file:
-        count += 1
-        if '@' in line:
-            line_found = count
+    #count = 0
+    #for line in converted_file:
+        #count += 1
+
+    #print("This is the line where it was found",line_found_number)
+
+    #print(converted_file[6])
 
     # confirm the email address is valid:
+    #email_line = converted_file[line_found_number]
 
+    # within the email list, extract the specific email address by obtaining the word with @ in it via list comprehension
+    character_to_find = '@'
+    email_address = [s for s in converted_file if character_to_find in s]
+    #strip out the '\n' value
+    email_address = email_address[0].strip()
+    print(email_address)
 
+    try:
+        if not ('.com' in email_address or '.edu' in email_address):
+            raise ValueError("The email does not contain a .com or .edu")
+
+        at_char_found = False
+        for i in range(len(email_address) - 1):
+            if email_address[i] == '@':
+                at_char_found = True
+                if not email_address[i + 1].islower():
+                    raise ValueError("The email does not contain a lowercase letter after @")
+
+        if not at_char_found:
+            raise ValueError("The email contains no @ character")
+
+        if any(char.isdigit() for char in email_address):
+            raise ValueError("The email is not free of numbers or integers")
+
+        print('Email is Valid!!!')
+
+    except:
+        raise ValueError("There Appears to be an error in the email address.")
 
 """
 
@@ -145,7 +179,9 @@ def generate_html(txt_input_file, html_output_file):
 def main():
 
     file = 'resume.txt'
-    test = open_read_file(file)
+    converted_file = open_read_file(file)
+    detect_the_email(converted_file)
+
 
 
     # DO NOT REMOVE OR UPDATE THIS CODE
