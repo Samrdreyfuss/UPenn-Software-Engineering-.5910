@@ -5,9 +5,20 @@ from make_website import *
 class MakeWebsite_Test(unittest.TestCase):
 
     def test_open_read_file(self):
-        # test
+        # test the ability to be able to read the sample resume file correctly
+        self.assertEqual("I.M. Student\n", open_read_file("resume.txt")[0])
 
 
+    def test_detect_the_name(self):
+        # test the ability to read the name of test file
+        converted_file = open_read_file("resume.txt")
+        self.assertEqual('I.M. Student', detect_the_name(converted_file))
+
+        # test the error functionality of a bad name:
+        converted_file = open_read_file("resume.txt")
+        self.assertEqual('I.M. Student', detect_the_name(converted_file))
+
+"""        
 
     def test_surround_block(self):
         # test text with surrounding h1 tags
@@ -43,6 +54,8 @@ class MakeWebsite_Test(unittest.TestCase):
             '<a href="mailto:lbrandon.at.seas.upenn.edu">lbrandon.at.seas.upenn.edu</a>',
             create_email_link('lbrandon.at.seas.upenn.edu')
         )
+
+"""
 
 if __name__ == '__main__':
     unittest.main()

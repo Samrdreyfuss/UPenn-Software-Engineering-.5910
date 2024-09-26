@@ -75,7 +75,7 @@ def detect_the_name(converted_file):
     # if name is invalid, return "Invalid Name"
     try:
         if name[0].islower():
-            first_line = 'Invalid Name'
+            name = 'Invalid Name'
             raise ValueError("The first letter in the name is not uppercase.")
     except ValueError as error:
         print(error)
@@ -176,6 +176,10 @@ def detect_the_project(converted_file):
 
     project_list = [project for project in converted_file if converted_file.index(start_of_projects) < converted_file.index(project) < converted_file.index(end_of_projects)]
 
+    # strip '\n' used for spacing and blank values
+    project_list = [value.strip() for value in project_list]
+    project_list = [value.strip(' ') for value in project_list]
+
     print(project_list)
 
 def surround_block(tag, text):
@@ -224,7 +228,8 @@ def main():
 
     file = 'resume.txt'
     converted_file = open_read_file(file)
-    detect_the_project(converted_file)
+    name = detect_the_name(converted_file)
+    print(name)
 
 
 
