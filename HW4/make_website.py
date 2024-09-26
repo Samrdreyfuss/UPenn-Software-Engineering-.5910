@@ -3,6 +3,9 @@
 # sources:
 # https://www.geeksforgeeks.org/python-string-find/
 # https://www.geeksforgeeks.org/python-get-the-string-after-occurrence-of-given-substring/
+# https://www.geeksforgeeks.org/python-list-comprehension-using-if-else/
+# https://discuss.python.org/t/multiple-if-s-in-comprehensions-vs-and/18872
+# https://www.w3schools.com/python/ref_string_join.asp
 
 
 def open_read_file(file):
@@ -134,13 +137,46 @@ def detect_the_course(converted_file):
 
     print("This is the line where it was found", line_found_number)
 
-    print(converted_file[line_found_number - 1])
+    courses_list = converted_file[line_found_number - 1]
+    #remove empty spaces
+    courses_list = courses_list.strip()
+    print(courses_list)
 
-"""
+    #remove 'Courses' & ':-'
+    courses_list = courses_list.strip('Courses')
+    courses_list = courses_list.strip()
+    courses_list = courses_list.strip(':-')
+    courses_list = courses_list.strip()
+    # strip out spaces before and after each course:
+    courses_list = courses_list.split(',')
+    #final_course_list = []
+    final_course_list = [course.strip() for course in courses_list]
+
+    """
+    for course in courses_list:
+        print(course)
+        final_course_list = [course.strip() for course in courses_list]
+        final_course_list.append(course)
+    """
+    print(final_course_list)
 
 def detect_the_project(converted_file):
-    
-"""
+
+    count = 0
+    for line in converted_file:
+        count += 1
+        if line[0] == '-':
+            if len(line) >= 10:
+                end_of_project_dash_count = len(line) - 1
+
+    end_of_projects = ''.join('-' for _ in range(end_of_project_dash_count))
+    end_of_projects = end_of_projects + '\n'
+
+    start_of_projects = 'Projects\n'
+
+    project_list = [project for project in converted_file if converted_file.index(start_of_projects) < converted_file.index(project) < converted_file.index(end_of_projects)]
+
+    print(project_list)
 
 def surround_block(tag, text):
     """
@@ -188,7 +224,7 @@ def main():
 
     file = 'resume.txt'
     converted_file = open_read_file(file)
-    detect_the_course(converted_file)
+    detect_the_project(converted_file)
 
 
 
