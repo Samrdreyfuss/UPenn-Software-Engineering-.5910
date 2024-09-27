@@ -16,7 +16,13 @@ class MakeWebsite_Test(unittest.TestCase):
 
         # test the error functionality of a bad name:
         converted_file = open_read_file("resume.txt")
-        self.assertEqual('I.M. Student', detect_the_name(converted_file))
+        converted_file = converted_file[0].strip()
+        converted_file = converted_file.lower()
+        self.assertEqual('Invalid Name', detect_the_name(converted_file))
+
+
+
+
 
 """        
 

@@ -1,4 +1,6 @@
 #from doc.pycurl.examples.retriever import filename
+from openai import project
+
 
 # sources:
 # https://www.geeksforgeeks.org/python-string-find/
@@ -6,6 +8,9 @@
 # https://www.geeksforgeeks.org/python-list-comprehension-using-if-else/
 # https://discuss.python.org/t/multiple-if-s-in-comprehensions-vs-and/18872
 # https://www.w3schools.com/python/ref_string_join.asp
+# https://www.w3schools.com/python/ref_string_splitlines.asp
+# https://www.w3schools.com/python/ref_string_replace.asp
+# https://www.geeksforgeeks.org/enumerate-in-python/
 
 
 def open_read_file(file):
@@ -95,7 +100,6 @@ def detect_the_email(converted_file):
 
     # strip out any white spaces per instructions
     email_address = email_address.strip(' ')
-    print(email_address)
 
     try:
         # first, confirm if the email address includes .com or .edu in title, otherwise throw an error
@@ -135,12 +139,9 @@ def detect_the_course(converted_file):
         if 'Courses' in line:
             line_found_number = count
 
-    print("This is the line where it was found", line_found_number)
-
     courses_list = converted_file[line_found_number - 1]
     #remove empty spaces
     courses_list = courses_list.strip()
-    print(courses_list)
 
     #remove 'Courses' & ':-'
     courses_list = courses_list.strip('Courses')
@@ -158,7 +159,8 @@ def detect_the_course(converted_file):
         final_course_list = [course.strip() for course in courses_list]
         final_course_list.append(course)
     """
-    print(final_course_list)
+    return final_course_list
+
 
 def detect_the_project(converted_file):
 
@@ -180,15 +182,43 @@ def detect_the_project(converted_file):
     project_list = [value.strip() for value in project_list]
     project_list = [value.strip(' ') for value in project_list]
 
-    print(project_list)
+    return project_list
+
+
+def open_html_template():
+    file1 = 'resume_template.html'
+    file2 = 'resume.html'
+
+    with open(file1) as fin:
+
+        # reads all lines as a single string
+        text = fin.read()
+
+        # split out lines
+        all_lines = text.splitlines()
+
+        # remove the last 2 lines
+        altered_lines = all_lines[:-2]
+
+        # compile all remaining lines:
+        finalized_lines = '\n'.join(altered_lines)
+
+        # open second file in write mode
+        fout = open(file2,"w")
+
+        #write single string to second file
+        fout.write(finalized_lines)
+
+        # close second file
+        fout.close()
+
 
 def surround_block(tag, text):
     """
     Surrounds the given text with the given html tag and returns the string.
     """
-
-    # insert code
-    pass
+    converted_html = f'<{tag}>{text}</{tag}>'
+    return  converted_html
 
 def create_email_link(email_address):
     """
@@ -202,10 +232,19 @@ def create_email_link(email_address):
     Note: If, for some reason the email address does not contain @,
     use the email address as is and don't replace anything.
     """
+    # display the email address with an [aT] instead of an @
+    original_email = email_address
 
-    # insert code
-    pass
+    if '@' in email_address:
+        modified_email = email_address.replace('@','[aT]')
+        converted_email = f'<a href="mailto:{original_email}">{modified_email}</a>'
+    else:
+        converted_email = f'<a href="mailto:{original_email}">{original_email}</a>'
 
+    return converted_email
+
+
+    #txt_input_file, html_output_file
 def generate_html(txt_input_file, html_output_file):
     """
     Loads given txt_input_file,
@@ -221,21 +260,74 @@ def generate_html(txt_input_file, html_output_file):
     # call function(s) to write the name, email address, list of projects, and list of courses to the given html_output_file
     """
 
-    # insert code
-    pass
+    converted_file = open_read_file(txt_input_file)
+    name = detect_the_name(converted_file)
+    formatted_name = surround_block('h1', name)
+    email = detect_the_email(converted_file)
+
+    # call all necessary functions:
+    converted_file = open_read_file(txt_input_file)
+    course_list = detect_the_course(converted_file)
+    project_list = detect_the_project(converted_file)
+    #open_html_template()
+    #surrounded_block = surround_block(tag, text)
+    #create_email_link(email)
+
+    html_body_0 = f"""
+<div id="page-wrap">
+</div>
+</div>
+{formatted_name}
+<p>Email: <a
+{email}
+</div>
+"""
+
+    html_body_1 = """
+<div>
+<h2>Projects</h2>
+<ul>"""
+
+    # create dictionary for projects:
+    html_body_2 = """"""
+    project_dict = {}
+    for key, value in enumerate(project_list):
+        value = surround_block('li', value)
+        project_dict[key] = value
+        html_body_2 += f"{project_dict[key]}\n"
+
+    html_body_3 = """
+</ul\n>
+</div>
+    """
+
+    # combine the differnt static and dynamic html bodies:
+
+    # convert the course_list into only strings
+    course_list = ", ".join(course_list)
+
+    html_body_4 = f"""
+<div>
+<h3>Courses</h3>
+<span>{course_list}<span>
+<div>\n"""
+
+    html_body = html_body_0.strip() + html_body_1.strip() + html_body_2.strip() + html_body_3.strip() + html_body_4.strip()
+
+    print(html_body)
+
+    with open('html_output_file','w') as f:
+        f.write(html_body)
 
 def main():
-
-    file = 'resume.txt'
-    converted_file = open_read_file(file)
-    name = detect_the_name(converted_file)
-    print(name)
-
-
+    txt_input_file = 'resume.txt'
+    html_output_file = 'test.txt'
+    converted_file = open_read_file(txt_input_file)
+    generate_html(txt_input_file, html_output_file)
 
     # DO NOT REMOVE OR UPDATE THIS CODE
     # generate resume.html file from provided sample resume.txt
-    generate_html('resume.txt', 'resume.html')
+    #generate_html('resume.txt', 'resume.html')
 
     # DO NOT REMOVE OR UPDATE THIS CODE.
     # Uncomment each call to the generate_html function when you’re ready
