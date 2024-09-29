@@ -34,24 +34,6 @@ class MakeWebsite_Test(unittest.TestCase):
         converted_file = open_read_file("resume.txt")
         self.assertEqual(['CancerDetector.com, New Jersey, USA - Project manager, codified the assessment and mapped it to the CancerDetector ontology. Member of the UI design team, designed the portfolio builder UI and category search pages UI. Reviewed existing rank order and developed new search rank order approach.\n', 'Biomedical Imaging - Developed a semi-automatic image mosaic program based on SIFT algorithm (using Matlab)\n'],detect_the_project(converted_file))
 
-    '''
-    def test_open_html_tamplate(self):
-        with open('resume.html', 'r') as file1:
-            lines = file1.readlines()
-            file1.close()
-
-        print(lines)
-
-        # remove the last 2 lines
-        file1 = lines[:-2]
-        #print(file1)
-        file2 = 'resume.html'
-        open_html_template(file2)
-        #file1 = open('resume_template.html', 'r', encoding='cp1252')
-        file2 = open('resume.html','r',encoding='cp1252')
-        self.assertAlmostEquals(file1,file2.read())
-    '''
-
     def test_surround_block(self):
         # test text with surrounding h1 tags
         self.assertEqual("<h1>Eagles</h1>", surround_block('h1', 'Eagles'))
@@ -66,12 +48,6 @@ class MakeWebsite_Test(unittest.TestCase):
                          surround_block('p', 'Lorem ipsum dolor sit amet, consectetur ' +
                                         'adipiscing elit. Sed ac felis sit amet ante porta ' +
                                         'hendrerit at at urna.'))
-
-
-
-
-# contents_file_2 = open('resume.html','r',encoding='cp1252')
-# print(contents_file_2.read())
 
 
     def test_create_email_link(self):
@@ -97,3 +73,24 @@ class MakeWebsite_Test(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+"""
+
+    def test_open_html_tamplate(self):
+        with open('resume.html', 'r') as file1:
+            lines = file1.readlines()
+
+        # remove the last 2 lines
+        file1 = lines[:-2]
+        print(file1)
+        file2 = 'resume.html'
+        open_html_template(file2)
+        #file1 = open('resume_template.html', 'r', encoding='cp1252')
+        with open('resume.html', 'r') as file2:
+            file2 = file2.readlines()
+
+        #print(file1)
+        #print(file2)
+        self.assertAlmostEquals(file1,file2)
+"""

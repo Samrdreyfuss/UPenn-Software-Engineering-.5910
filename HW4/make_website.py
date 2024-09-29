@@ -120,11 +120,12 @@ def detect_the_email(converted_file):
         # third, check if there are any numbers/ints in the email address
         # If found, raise an error
         if any(char.isdigit() for char in email_address):
-            raise ValueError("The email contains numbers or integers")
+            email_address = ''
 
         print('The Email Found is Valid!!!')
 
     except:
+        email_address = ''
         raise ValueError("There is an error in the email address.")
 
     return email_address
@@ -178,10 +179,16 @@ def detect_the_project(converted_file):
 
     project_list = [project for project in converted_file if converted_file.index(start_of_projects) < converted_file.index(project) < converted_file.index(end_of_projects)]
 
-
     # strip '\n' used for spacing and blank values
-    #project_list = [value.strip() for value in project_list]
     project_list = [value.strip(' ') for value in project_list]
+
+    final_project_list = []
+    for i in project_list:
+        if i == '\n' or i == '\t\t\t\t\t\n':
+            continue
+        final_project_list.append(i)
+
+    project_list = final_project_list
 
     return project_list
 
@@ -236,6 +243,9 @@ def create_email_link(email_address):
     """
     # display the email address with an [aT] instead of an @
     original_email = email_address
+
+    if email_address == "":
+        converted_email = ""
 
     if '@' in email_address:
         modified_email = email_address.replace('@','[aT]')
@@ -329,6 +339,7 @@ def generate_html(txt_input_file, html_output_file):
 
 
 def main():
+
 
     # DO NOT REMOVE OR UPDATE THIS CODE
     # generate resume.html file from provided sample resume.txt
