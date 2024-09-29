@@ -5,12 +5,13 @@ from make_website import *
 class MakeWebsite_Test(unittest.TestCase):
 
     def test_open_read_file(self):
-        # test the ability to be able to read the sample resume file correctly
+        # test the ability to be able to read the sample resume file correctly (first line)
         self.assertEqual("I.M. Student\n", open_read_file("resume.txt")[0])
 
 
     def test_detect_the_name(self):
         # test the ability to read the name of test file
+        # we are assuming the name is always on the first line of the file per the instructions
         converted_file = open_read_file("resume.txt")
         self.assertEqual('I.M. Student', detect_the_name(converted_file))
 
@@ -24,11 +25,17 @@ class MakeWebsite_Test(unittest.TestCase):
         converted_file = open_read_file("resume.txt")
         self.assertEqual('tonyl@seas.upenn.edu',detect_the_email(converted_file))
 
+        # test wrong email results in blank email returned to html
+        converted_file = open_read_file('TestResumes/resume_wrong_email/resume.txt')
+        self.assertEqual('', detect_the_email(converted_file))
 
     def test_detect_the_course(self):
         converted_file = open_read_file("resume.txt")
         self.assertEqual(['Programming Languages and Techniques', 'Biomedical image analysis', 'Software Engineering'],detect_the_course(converted_file))
 
+        # test course with white spaces
+        converted_file = open_read_file("TestResumes\resume_courses_w_whitespace/resume.txt")
+        self.assertEqual(['Programming Languages and Techniques', 'Biomedical image analysis', 'Pottery'],detect_the_course(converted_file))
 
     def test_detect_the_project(self):
         converted_file = open_read_file("resume.txt")
@@ -70,27 +77,11 @@ class MakeWebsite_Test(unittest.TestCase):
             create_email_link('lbrandon.at.seas.upenn.edu')
         )
 
+    """
+    Please note that per the instructions on the Unit Testing evaluation portion of the homework PDF, I didnt't
+    include Unit testing for function that writes/appends to a file (specifically generate_html, open_html_template, 
+    """
 
 if __name__ == '__main__':
     unittest.main()
 
-
-"""
-
-    def test_open_html_tamplate(self):
-        with open('resume.html', 'r') as file1:
-            lines = file1.readlines()
-
-        # remove the last 2 lines
-        file1 = lines[:-2]
-        print(file1)
-        file2 = 'resume.html'
-        open_html_template(file2)
-        #file1 = open('resume_template.html', 'r', encoding='cp1252')
-        with open('resume.html', 'r') as file2:
-            file2 = file2.readlines()
-
-        #print(file1)
-        #print(file2)
-        self.assertAlmostEquals(file1,file2)
-"""
