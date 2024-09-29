@@ -1,5 +1,5 @@
 #from doc.pycurl.examples.retriever import filename
-from openai import project
+#from openai import project
 
 
 # sources:
@@ -11,6 +11,7 @@ from openai import project
 # https://www.w3schools.com/python/ref_string_splitlines.asp
 # https://www.w3schools.com/python/ref_string_replace.asp
 # https://www.geeksforgeeks.org/enumerate-in-python/
+# https://www.w3schools.com/python/ref_func_isinstance.asp
 
 
 def open_read_file(file):
@@ -70,6 +71,7 @@ def open_read_file(file):
 def detect_the_name(converted_file):
     # extract first line of text
     name = converted_file[0]
+
     # strip '\n' used for spacing
     name = name.strip()
 
@@ -87,12 +89,9 @@ def detect_the_name(converted_file):
 
     return name
 
-
-
-
 def detect_the_email(converted_file):
 
-    # within the email list, extract the specific email address by obtaining the word with @ in it via list comprehension
+    # for the email list, extract the specific email address by obtaining the word with @ in it via list comprehension
     character_to_find = '@'
     email_address = [s for s in converted_file if character_to_find in s]
     #strip out the '\n' value
@@ -121,13 +120,14 @@ def detect_the_email(converted_file):
         # third, check if there are any numbers/ints in the email address
         # If found, raise an error
         if any(char.isdigit() for char in email_address):
-            raise ValueError("The email is not free of numbers or integers")
+            raise ValueError("The email contains numbers or integers")
 
         print('The Email Found is Valid!!!')
 
     except:
-        raise ValueError("There Appears to be an error in the email address.")
+        raise ValueError("There is an error in the email address.")
 
+    return email_address
 
 
 def detect_the_course(converted_file):
@@ -153,13 +153,13 @@ def detect_the_course(converted_file):
     #final_course_list = []
     final_course_list = [course.strip() for course in courses_list]
 
-    """
-    for course in courses_list:
-        print(course)
-        final_course_list = [course.strip() for course in courses_list]
-        final_course_list.append(course)
-    """
-    return final_course_list
+    # remove any strange punctuation from the course strings:
+
+    punctuation_to_remove = '_#$&^!*()'
+
+    final_course_list_punctuation_screened = [''.join(val for val in course if val not in punctuation_to_remove) for course in final_course_list]
+
+    return final_course_list_punctuation_screened
 
 
 def detect_the_project(converted_file):
@@ -178,21 +178,21 @@ def detect_the_project(converted_file):
 
     project_list = [project for project in converted_file if converted_file.index(start_of_projects) < converted_file.index(project) < converted_file.index(end_of_projects)]
 
+
     # strip '\n' used for spacing and blank values
-    project_list = [value.strip() for value in project_list]
+    #project_list = [value.strip() for value in project_list]
     project_list = [value.strip(' ') for value in project_list]
 
     return project_list
 
 
-def open_html_template():
+def open_html_template(file2):
     file1 = 'resume_template.html'
-    file2 = 'resume.html'
 
-    with open(file1) as fin:
+    with open(file1) as input_file:
 
         # reads all lines as a single string
-        text = fin.read()
+        text = input_file.read()
 
         # split out lines
         all_lines = text.splitlines()
@@ -204,19 +204,21 @@ def open_html_template():
         finalized_lines = '\n'.join(altered_lines)
 
         # open second file in write mode
-        fout = open(file2,"w")
+        with open(file2,"w") as output_file:
 
-        #write single string to second file
-        fout.write(finalized_lines)
+            # contents_file_2 = open('resume.html','r',encoding='cp1252')
+            # print(contents_file_2.read())
 
-        # close second file
-        fout.close()
+            #write single string to second file
+            output_file.write(finalized_lines)
+
 
 
 def surround_block(tag, text):
     """
     Surrounds the given text with the given html tag and returns the string.
     """
+
     converted_html = f'<{tag}>{text}</{tag}>'
     return  converted_html
 
@@ -264,6 +266,7 @@ def generate_html(txt_input_file, html_output_file):
     name = detect_the_name(converted_file)
     formatted_name = surround_block('h1', name)
     email = detect_the_email(converted_file)
+    email_link = create_email_link(email)
 
     # call all necessary functions:
     converted_file = open_read_file(txt_input_file)
@@ -273,13 +276,16 @@ def generate_html(txt_input_file, html_output_file):
     #surrounded_block = surround_block(tag, text)
     #create_email_link(email)
 
+    # call output file to write first block of html code (which is the template block)
+    open_html_template(html_output_file)
+
     html_body_0 = f"""
 <div id="page-wrap">
 </div>
 </div>
 {formatted_name}
 <p>Email: <a
-{email}
+{email_link}
 </div>
 """
 
@@ -294,10 +300,10 @@ def generate_html(txt_input_file, html_output_file):
     for key, value in enumerate(project_list):
         value = surround_block('li', value)
         project_dict[key] = value
-        html_body_2 += f"{project_dict[key]}\n"
+        html_body_2 += f"{project_dict[key]}"
 
     html_body_3 = """
-</ul\n>
+</ul>
 </div>
     """
 
@@ -310,24 +316,23 @@ def generate_html(txt_input_file, html_output_file):
 <div>
 <h3>Courses</h3>
 <span>{course_list}<span>
-<div>\n"""
+<div>
+<div>
+</body>
+</html>"""
 
-    html_body = html_body_0.strip() + html_body_1.strip() + html_body_2.strip() + html_body_3.strip() + html_body_4.strip()
+    html_body = html_body_0.strip() + "\n" + html_body_1.strip() + "\n" + html_body_2.strip() + "\n" + html_body_3.strip() + "\n" + html_body_4.strip()
 
-    print(html_body)
+    # append the created html body above to the previously queries html template
+    with open(html_output_file,'a') as output_file:
+        output_file.write(html_body)
 
-    with open('html_output_file','w') as f:
-        f.write(html_body)
 
 def main():
-    txt_input_file = 'resume.txt'
-    html_output_file = 'test.txt'
-    converted_file = open_read_file(txt_input_file)
-    generate_html(txt_input_file, html_output_file)
 
     # DO NOT REMOVE OR UPDATE THIS CODE
     # generate resume.html file from provided sample resume.txt
-    #generate_html('resume.txt', 'resume.html')
+    generate_html('resume.txt', 'resume.html')
 
     # DO NOT REMOVE OR UPDATE THIS CODE.
     # Uncomment each call to the generate_html function when you’re ready
