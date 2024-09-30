@@ -22,7 +22,7 @@ def open_read_file(file):
     file: text file name/specific file
 
     Returns:
-    lines: list of lines from file
+    lines: list of string lines from file
     """
 
     # open file
@@ -37,13 +37,13 @@ def open_read_file(file):
 def detect_the_name(converted_file):
     """
     Functionality:
-    Identifies the name included on the resume
+    Identifies the name included on the resume (which we assume is the first line of each file)
 
     Arguments:
-    converted_file : text file name/specific file
+    converted_file : text file which is the text file to be converted into a list
 
     Returns:
-    lines: list of lines from file
+    lines: str name found
     """
 
     # extract first line of text
@@ -56,7 +56,7 @@ def detect_the_name(converted_file):
     name = name.strip(' ')
 
     # confirm name is valid (not lowercase) via try/except
-    # if name is invalid, return "Invalid Name"
+    # if name is invalid, return "Invalid Name"  as name variable
     try:
         if name[0].islower():
             name = 'Invalid Name'
@@ -67,10 +67,21 @@ def detect_the_name(converted_file):
     return name
 
 def detect_the_email(converted_file):
+    """
+    Functionality:
+    Identifies the email address of the resume file (no matter what number of line its found)
+
+    Arguments:
+    converted_file : text file which is the text file to be converted into a list
+
+    Returns:
+    email_address: str, which is the email address identified
+    """
 
     # for the email list, extract the specific email address by obtaining the word with @ in it via list comprehension
     character_to_find = '@'
     email_address = [s for s in converted_file if character_to_find in s]
+
     #strip out the '\n' value
     email_address = email_address[0].strip()
 
@@ -95,13 +106,15 @@ def detect_the_email(converted_file):
             raise ValueError("The email contains no @ character")
 
         # third, check if there are any numbers/ints in the email address
-        # If found, raise an error
+        # If found, change email address to blank
         if any(char.isdigit() for char in email_address):
             email_address = ''
 
+        # If the email address looks sufficient tell the user an email was found in an overly excited matter...
         print('The Email Found is Valid!!!')
 
     except:
+        # if there are any other issues with the email address set the email_address to blank and raise error
         email_address = ''
         raise ValueError("There is an error in the email address.")
 
@@ -109,6 +122,16 @@ def detect_the_email(converted_file):
 
 
 def detect_the_course(converted_file):
+    """
+    Functionality:
+    Identifies the courses found in the resume file (no matter what number of line its found)
+
+    Arguments:
+    converted_file : text file which is the text file to be converted into a list
+
+    Returns:
+    final_course_list_punctuation_screened: list of strings, which are the courses found in the resume
+    """
 
     # the below logic searches each line for the @ character and records the line its found on
     count = 0
@@ -118,30 +141,42 @@ def detect_the_course(converted_file):
             line_found_number = count
 
     courses_list = converted_file[line_found_number - 1]
-    #remove empty spaces
+
+    # remove empty spaces
     courses_list = courses_list.strip()
 
-    #remove 'Courses' & ':-'
+    # remove 'Courses' & ':-' references
     courses_list = courses_list.strip('Courses')
     courses_list = courses_list.strip()
     courses_list = courses_list.strip(':-')
-    courses_list = courses_list.strip()
+    #courses_list = courses_list.strip()
+
     # strip out spaces before and after each course:
     courses_list = courses_list.split(',')
+
     #final_course_list = []
     final_course_list = [course.strip() for course in courses_list]
 
     # remove any strange punctuation from the course strings:
-
     punctuation_to_remove = '_#$&^!*()'
-
     final_course_list_punctuation_screened = [''.join(val for val in course if val not in punctuation_to_remove) for course in final_course_list]
 
     return final_course_list_punctuation_screened
 
 
 def detect_the_project(converted_file):
+    """
+    Functionality:
+    Identifies the projects found in the resume file (no matter what number of line they are found)
 
+    Arguments:
+    converted_file : text file which is the text file to be converted into a list
+
+    Returns:
+    project_list: list of strings, which are the projects found in the resume
+    """
+
+    # the below logic searches each line where the - character is greater or equal to 10 and records the line its found on
     count = 0
     for line in converted_file:
         count += 1
@@ -149,39 +184,68 @@ def detect_the_project(converted_file):
             if len(line) >= 10:
                 end_of_project_dash_count = len(line) - 1
 
+    # the amount of dashes are reconsructed to make a unique string to reference to define where the end of projects is
     end_of_projects = ''.join('-' for _ in range(end_of_project_dash_count))
     end_of_projects = end_of_projects + '\n'
 
+    # start of projects is defined a where 'Projects' is
     start_of_projects = 'Projects\n'
 
+    # the index values of start_of_projects and end_of projects are used to effectiely slice the list of projects via list comprehension
     project_list = [project for project in converted_file if converted_file.index(start_of_projects) < converted_file.index(project) < converted_file.index(end_of_projects)]
 
     # strip '\n' used for spacing and blank values
-    project_list = [value.strip(' ') for value in project_list]
+    project_list = [' '.join(s.split()) for s in project_list]
 
+    # strip random '\t' value:
+    project_list = [value.strip('') for value in project_list]
+
+    # remove either blank rows other strange values found in the file:
     final_project_list = []
     for i in project_list:
         if i == '\n' or i == '\t\t\t\t\t\n':
             continue
         final_project_list.append(i)
 
+    # provide new reference back to the project list variable
     project_list = final_project_list
+
+    # remove spaces:
+    #project_list = project_list.strip()
+
+    # remove '':
+    project_list = [string_to_test for string_to_test in project_list if string_to_test.strip() != '']
+
+
 
     return project_list
 
 
 def open_html_template(file2):
+    """
+    Functionality:
+    Opens template html file as a starting point for additional customer html code appending/inserting into new html file
+
+    Arguments:
+    file2 : a dynamically named html file the function writes its output to
+
+    Returns:
+    None (only file manipulation which is technically not a return)
+    """
+
+    # define template resume html file
     file1 = 'resume_template.html'
 
+    # open file and declare as input_file
     with open(file1) as input_file:
 
-        # reads all lines as a single string
+        # read all lines in file
         text = input_file.read()
 
-        # split out lines
+        # split out lines into individual strings
         all_lines = text.splitlines()
 
-        # remove the last 2 lines
+        # remove the last 2 lines from list
         altered_lines = all_lines[:-2]
 
         # compile all remaining lines:
@@ -190,63 +254,81 @@ def open_html_template(file2):
         # open second file in write mode
         with open(file2,"w") as output_file:
 
-            # contents_file_2 = open('resume.html','r',encoding='cp1252')
-            # print(contents_file_2.read())
-
             #write single string to second file
             output_file.write(finalized_lines)
 
 
 
 def surround_block(tag, text):
-    """
-    Surrounds the given text with the given html tag and returns the string.
-    """
 
+    """
+    Functionality:
+    Surrounds the given text with the given html tag and returns the string.
+
+    Arguments:
+    tag : str, html specific string to surround the text argument
+    text: str, the text variable which will be surrounded by html code
+
+    Returns:
+    converted_html: str, the combined tect and tag variables which will be read as html code
+    """
+    # suround text with tags
     converted_html = f'<{tag}>{text}</{tag}>'
     return  converted_html
 
 def create_email_link(email_address):
     """
+    Functionality:
     Creates an email link with the given email_address.
     To cut down on spammers harvesting the email address from the webpage,
     displays the email address with [aT] instead of @.
 
-    Example: Given the email address: lbrandon@wharton.upenn.edu
-    Generates the email link: <a href="mailto:lbrandon@wharton.upenn.edu">lbrandon[aT]wharton.upenn.edu</a>
+    Arguments:
+    email_address: str, the email address which will be converted into an html ready format
 
-    Note: If, for some reason the email address does not contain @,
-    use the email address as is and don't replace anything.
+    Returns:
+    converted_email: str, the converted email address
     """
-    # display the email address with an [aT] instead of an @
+
+    # remove empty/white spaces
+    email_address = email_address.strip()
+
+    #retain the original email address by creating referce with new variable
     original_email = email_address
 
-    if email_address == "":
-        converted_email = ""
 
+
+    # if @ is found in the email, display the email address with an [aT] instead of an @
     if '@' in email_address:
         modified_email = email_address.replace('@','[aT]')
         converted_email = f'<a href="mailto:{original_email}">{modified_email}</a>'
+        if email_address == '':
+            converted_email = ''
     else:
         converted_email = f'<a href="mailto:{original_email}">{original_email}</a>'
+
+    # if email address came in blank - return converted email blank
+    if email_address == "":
+        converted_email = ""
 
     return converted_email
 
 
-    #txt_input_file, html_output_file
+
 def generate_html(txt_input_file, html_output_file):
+
     """
+    Functionality:
     Loads given txt_input_file,
     gets the name, email address, list of projects, and list of courses,
     then writes the info to the given html_output_file.
 
-    # Hint(s):
-    # call function(s) to load given txt_input_file
-    # call function(s) to get name
-    # call function(s) to get email address
-    # call function(s) to get list of projects
-    # call function(s) to get list of courses
-    # call function(s) to write the name, email address, list of projects, and list of courses to the given html_output_file
+    Arguments:
+    txt_input_file: str, which is the file name to convert
+    html_output_file: str, which is the file output name to save in file
+
+    Returns:
+    None: (but an outputted html file is maniputled and saved)
     """
 
     converted_file = open_read_file(txt_input_file)
@@ -259,9 +341,6 @@ def generate_html(txt_input_file, html_output_file):
     converted_file = open_read_file(txt_input_file)
     course_list = detect_the_course(converted_file)
     project_list = detect_the_project(converted_file)
-    #open_html_template()
-    #surrounded_block = surround_block(tag, text)
-    #create_email_link(email)
 
     # call output file to write first block of html code (which is the template block)
     open_html_template(html_output_file)
@@ -285,8 +364,11 @@ def generate_html(txt_input_file, html_output_file):
     html_body_2 = """"""
     project_dict = {}
     for key, value in enumerate(project_list):
+
+        # use surround block function to automatically convert
         value = surround_block('li', value)
         project_dict[key] = value
+        # use key in dict to grab each value
         html_body_2 += f"{project_dict[key]}"
 
     html_body_3 = """
@@ -295,7 +377,6 @@ def generate_html(txt_input_file, html_output_file):
     """
 
     # combine the differnt static and dynamic html bodies:
-
     # convert the course_list into only strings
     course_list = ", ".join(course_list)
 
@@ -308,6 +389,7 @@ def generate_html(txt_input_file, html_output_file):
 </body>
 </html>"""
 
+    # aggregate html
     html_body = html_body_0.strip() + "\n" + html_body_1.strip() + "\n" + html_body_2.strip() + "\n" + html_body_3.strip() + "\n" + html_body_4.strip()
 
     # append the created html body above to the previously queries html template
@@ -318,18 +400,18 @@ def main():
 
     # DO NOT REMOVE OR UPDATE THIS CODE
     # generate resume.html file from provided sample resume.txt
-    generate_html('resume.txt', 'resume.html')
+    #generate_html('resume.txt', 'resume.html')
 
     # DO NOT REMOVE OR UPDATE THIS CODE.
     # Uncomment each call to the generate_html function when you’re ready
     # to test how your program handles each additional test resume.txt file
-    #generate_html('TestResumes/resume_bad_name_lowercase/resume.txt', 'TestResumes/resume_bad_name_lowercase/resume.html')
-    #generate_html('TestResumes/resume_courses_w_whitespace/resume.txt', 'TestResumes/resume_courses_w_whitespace/resume.html')
-    #generate_html('TestResumes/resume_courses_weird_punc/resume.txt', 'TestResumes/resume_courses_weird_punc/resume.html')
-    #generate_html('TestResumes/resume_projects_w_whitespace/resume.txt', 'TestResumes/resume_projects_w_whitespace/resume.html')
-    #generate_html('TestResumes/resume_projects_with_blanks/resume.txt', 'TestResumes/resume_projects_with_blanks/resume.html')
-    #generate_html('TestResumes/resume_template_email_w_whitespace/resume.txt', 'TestResumes/resume_template_email_w_whitespace/resume.html')
-    #generate_html('TestResumes/resume_wrong_email/resume.txt', 'TestResumes/resume_wrong_email/resume.html')
+    generate_html('TestResumes/resume_bad_name_lowercase/resume.txt', 'TestResumes/resume_bad_name_lowercase/resume.html')
+    generate_html('TestResumes/resume_courses_w_whitespace/resume.txt', 'TestResumes/resume_courses_w_whitespace/resume.html')
+    generate_html('TestResumes/resume_courses_weird_punc/resume.txt', 'TestResumes/resume_courses_weird_punc/resume.html')
+    generate_html('TestResumes/resume_projects_w_whitespace/resume.txt', 'TestResumes/resume_projects_w_whitespace/resume.html')
+    generate_html('TestResumes/resume_projects_with_blanks/resume.txt', 'TestResumes/resume_projects_with_blanks/resume.html')
+    generate_html('TestResumes/resume_template_email_w_whitespace/resume.txt', 'TestResumes/resume_template_email_w_whitespace/resume.html')
+    generate_html('TestResumes/resume_wrong_email/resume.txt', 'TestResumes/resume_wrong_email/resume.html')
 
     # If you want to test additional resume files, call the generate_html function with the given .txt file
     # and desired name of output .html file
