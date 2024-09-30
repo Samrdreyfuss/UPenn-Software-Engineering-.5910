@@ -48,16 +48,16 @@ class MakeWebsite_Test(unittest.TestCase):
         converted_file = open_read_file("resume.txt")
         self.assertEqual(['CancerDetector.com, New Jersey, USA - Project manager, codified the assessment and mapped it to the CancerDetector ontology. Member of the UI design team, designed the portfolio builder UI and category search pages UI. Reviewed existing rank order and developed new search rank order approach.', 'Biomedical Imaging - Developed a semi-automatic image mosaic program based on SIFT algorithm (using Matlab)'],detect_the_project(converted_file))
 
-        """
+
         # test we can detect the project(s) with whitespaces (non-typical case)
         converted_file = open_read_file("TestResumes/resume_projects_w_whitespace/resume.txt")
-        self.assertEqual(['CancerDetector.com, New Jersey, USA - Project manager, codified the assessment and mapped it to the CancerDetector ontology. Member of the UI design team, designed the portfolio builder UI and category search pages UI. Reviewed existing rank order and developed new search rank order approach.\n','Biomedical Imaging - Developed a semi-automatic image mosaic program based on SIFT algorithm (using Matlab)\n'],detect_the_project(converted_file))
+        self.assertEqual(['CancerDetector.com, New Jersey, USA - Project manager, codified the assessment and mapped it to the CancerDetector ontology. Member of the UI design team, designed the portfolio builder UI and category search pages UI. Reviewed existing rank order and developed new search rank order approach.','Biomedical Imaging - Developed a semi-automatic image mosaic program based on SIFT algorithm (using Matlab)'],detect_the_project(converted_file))
 
-    
+
         # test we can detect the project(s) with blanks (non-typical case)
         converted_file = open_read_file("TestResumes/resume_projects_with_blanks/resume.txt")
-        self.assertEqual(['CancerDetector.com, New Jersey, USA - Project manager, codified the assessment and mapped it to the CancerDetector ontology. Member of the UI design team, designed the portfolio builder UI and category search pages UI. Reviewed existing rank order and developed new search rank order approach.\n','Biomedical Imaging - Developed a semi-automatic image mosaic program based on SIFT algorithm (using Matlab)\n'],detect_the_project(converted_file))
-        """
+        self.assertEqual(['CancerDetector.com, New Jersey, USA - Project manager, codified the assessment and mapped it to the CancerDetector ontology. Member of the UI design team, designed the portfolio builder UI and category search pages UI. Reviewed existing rank order and developed new search rank order approach.','Biomedical Imaging - Developed a semi-automatic image mosaic program based on SIFT algorithm (using Matlab)'],detect_the_project(converted_file))
+
 
     def test_surround_block(self):
         # test text with surrounding h1 tags
@@ -68,11 +68,7 @@ class MakeWebsite_Test(unittest.TestCase):
 
         # test text with surrounding p tags
         self.assertEqual('<p>Lorem ipsum dolor sit amet, consectetur ' +
-                         'adipiscing elit. Sed ac felis sit amet ante porta ' +
-                         'hendrerit at at urna.</p>',
-                         surround_block('p', 'Lorem ipsum dolor sit amet, consectetur ' +
-                                        'adipiscing elit. Sed ac felis sit amet ante porta ' +
-                                        'hendrerit at at urna.'))
+                         'adipiscing elit. Sed ac felis sit amet ante porta ' + 'hendrerit at at urna.</p>',surround_block('p', 'Lorem ipsum dolor sit amet, consectetur ' + 'adipiscing elit. Sed ac felis sit amet ante porta ' + 'hendrerit at at urna.'))
 
 
     def test_create_email_link(self):

@@ -198,7 +198,7 @@ def detect_the_project(converted_file):
     project_list = [' '.join(s.split()) for s in project_list]
 
     # strip random '\t' value:
-    project_list = [value.strip('') for value in project_list]
+    #project_list = [value.strip('') for value in project_list]
 
     # remove either blank rows other strange values found in the file:
     final_project_list = []
@@ -215,8 +215,6 @@ def detect_the_project(converted_file):
 
     # remove '':
     project_list = [string_to_test for string_to_test in project_list if string_to_test.strip() != '']
-
-
 
     return project_list
 
@@ -400,7 +398,7 @@ def main():
 
     # DO NOT REMOVE OR UPDATE THIS CODE
     # generate resume.html file from provided sample resume.txt
-    #generate_html('resume.txt', 'resume.html')
+    generate_html('resume.txt', 'resume.html')
 
     # DO NOT REMOVE OR UPDATE THIS CODE.
     # Uncomment each call to the generate_html function when you’re ready
