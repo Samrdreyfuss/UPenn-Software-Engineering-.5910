@@ -1,7 +1,6 @@
 #from doc.pycurl.examples.retriever import filename
 #from openai import project
 
-
 # sources:
 # https://www.geeksforgeeks.org/python-string-find/
 # https://www.geeksforgeeks.org/python-get-the-string-after-occurrence-of-given-substring/
@@ -20,19 +19,33 @@ def open_read_file(file):
     Opens up file and reads each line of file into a list
 
     Arguments:
-    file: text file name
+    file: text file name/specific file
 
     Returns:
-    lines: list of lines
+    lines: list of lines from file
     """
 
+    # open file
     f = open(file, 'r')
+    # read lines to variable
     lines = f.readlines()
+    # close file
     f.close()
     return lines
 
 
 def detect_the_name(converted_file):
+    """
+    Functionality:
+    Identifies the name included on the resume
+
+    Arguments:
+    converted_file : text file name/specific file
+
+    Returns:
+    lines: list of lines from file
+    """
+
     # extract first line of text
     name = converted_file[0]
 
