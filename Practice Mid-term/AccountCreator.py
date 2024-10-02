@@ -1,6 +1,8 @@
 from Account import *
 from AccountManager import *
 
+import os
+print(os.getcwd())
 
 class AccountCreator(object):
     """"A class for loading bank account information from a file, storing it in a dictionary,
