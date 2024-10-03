@@ -10,6 +10,9 @@ class AccountCreator(object):
     """
 
     # We do not have an __init__ function and will call the default constructor.
+    accounts = 'acounts.txt'
+    deposits = 'deposits.csv'
+    withdrawals = 'withdrawals'
 
     def init_bank_accounts(self, accounts, deposits, withdrawals):
         '''
@@ -46,11 +49,12 @@ class AccountCreator(object):
         1,56.3,72.1
         '''
 
+        # step 1:
 
-        with open(accounts, 'r') as account_names:
+        with open('accounts.txt', 'r') as account_names:
             lines = account_names.readlines()
 
-        bank_accounts = {}
+        name_accounts = {}
         for name in lines:
             # remove | and replace with comma
             name = name.replace('|', ',')
@@ -60,11 +64,18 @@ class AccountCreator(object):
 
             # convert the line to a dictionary entry
             split_line = name.split(',')
-            name = [split_line[0]] + split_line[1:]
-            bank_accounts[name[0]] = ', '.join(name[1:])
+            # print(split_line[1:])
+            # name = [split_line[0]] + split_line[1:]
+            name_accounts[split_line[0]] = split_line[1:]
 
-        # all deposit logic
-        with open(deposits, 'r') as deposit_amounts:
+        bank_accounts = {}
+        for key, value in name_accounts.items():
+            bank_object = Account(key, value[0], value[1])
+            bank_accounts[key] = bank_object
+            # bank_object.balance = value[2]
+
+        # Step 2: all deposit logic
+        with open('deposits.csv', 'r') as deposit_amounts:
             lines = deposit_amounts.readlines()
 
             deposit_dictionary = {}
@@ -85,8 +96,9 @@ class AccountCreator(object):
                     # convert the line to a dictionary entry
                 deposit_dictionary[account_split_line[0]] = account_total
 
+        # Step 3: all withdrawn logic
         # all withdrawn logic
-        with open(withdrawals, 'r') as withdrawl_amounts:
+        with open('withdrawals.csv', 'r') as withdrawl_amounts:
             lines = withdrawl_amounts.readlines()
 
             withdrawl_dictionary = {}
@@ -112,16 +124,12 @@ class AccountCreator(object):
                         if key in withdrawl_dictionary}
 
         # map balance_dict onto the bank_accounts dictionary and also convert the values into a list
-        for key in balance_dict:
-            if key in bank_accounts:
-                if not isinstance(bank_accounts[key], list):
-                    bank_accounts[key] = [bank_accounts[key]]
-                bank_accounts[key].append(balance_dict[key])
+        for key in bank_accounts:
+            if key in balance_dict:
+                bank_object = bank_accounts[key]
+                bank_object.balance = balance_dict[key]
 
-            else:
-                # if the key doesn't exist - add with value from balance dict
-                bank_accounts[key] = balance_dict[key]
+        return bank_accounts
 
 
-    for item in bank_accounts:
 

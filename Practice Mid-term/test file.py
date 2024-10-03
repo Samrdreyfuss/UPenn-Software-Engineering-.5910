@@ -18,8 +18,10 @@ for name in lines:
 
     # convert the line to a dictionary entry
     split_line = name.split(',')
-    name = [split_line[0]] + split_line[1:]
-    name_accounts[name[0]] = ', '.join(name[1:])
+    #print(split_line[1:])
+    #name = [split_line[0]] + split_line[1:]
+    name_accounts[split_line[0]] = split_line[1:]
+
 
 # all deposit logic
 with open('deposits.csv', 'r') as deposit_amounts:
@@ -83,10 +85,12 @@ for key in balance_dict:
 
 bank_acounts = {}
 for key, value in name_accounts.items():
-    print(key, value)
     bank_object = Account(key,value[0],value[1])
     bank_acounts[key] = bank_object
+    bank_object.balance = value[2]
 
 print(bank_acounts)
+
+
 
 
