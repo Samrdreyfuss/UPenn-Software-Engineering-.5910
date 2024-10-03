@@ -1,10 +1,13 @@
+from Account import *
+from AccountManager import *
 
 
+# https://www.geeksforgeeks.org/python-cross-mapping-of-two-dictionary-value-lists/
 
 with open('accounts.txt', 'r') as account_names:
     lines = account_names.readlines()
 
-bank_accounts = {}
+name_accounts = {}
 for name in lines:
 
     # remove | and replace with comma
@@ -16,11 +19,11 @@ for name in lines:
     # convert the line to a dictionary entry
     split_line = name.split(',')
     name = [split_line[0]] + split_line[1:]
-    bank_accounts[name[0]] = ', '.join(name[1:])
+    name_accounts[name[0]] = ', '.join(name[1:])
 
+# all deposit logic
 with open('deposits.csv', 'r') as deposit_amounts:
     lines = deposit_amounts.readlines()
-    print(lines)
 
     deposit_dictionary = {}
     for account in lines:
@@ -31,14 +34,59 @@ with open('deposits.csv', 'r') as deposit_amounts:
         account_split_line = account.split(',')
         account_summation_list = account_split_line[1:]
         account_total = 0
-        deposit = 0
         for deposit in account_summation_list:
+
+            #convert to float
             deposit = float(deposit)
             account_total += deposit
             account_total = round(account_total,2)
-        print(account_total)
 
             # convert the line to a dictionary entry
-            #deposit_dictionary[account_split_line[0]] = ','.join(account_total)
+        deposit_dictionary[account_split_line[0]] = account_total
 
-        #print(deposit_dictionary)
+# all withdrawn logic
+with open('withdrawals.csv', 'r') as withdrawl_amounts:
+    lines = withdrawl_amounts.readlines()
+
+    withdrawl_dictionary = {}
+    for account in lines:
+        # strip white space
+        account = account.strip()
+
+        # convert the line to a dictionary entry
+        account_split_line = account.split(',')
+        account_summation_list = account_split_line[1:]
+        account_total = 0
+        for withdrawl in account_summation_list:
+
+            #convert to float
+            withdrawl = float(withdrawl)
+            account_total += withdrawl
+            account_total = round(account_total,2)
+
+            # convert the line to a dictionary entry
+        withdrawl_dictionary[account_split_line[0]] = account_total
+
+# subtract the withdrawl dictionary from the deposit dictionary:
+balance_dict = {key : round(deposit_dictionary[key] - withdrawl_dictionary[key],2) for key in deposit_dictionary if key in withdrawl_dictionary}
+
+# map balance_dict onto the bank_accounts dictionary and also convert the values into a list
+for key in balance_dict:
+    if key in name_accounts:
+        if not isinstance(name_accounts[key], list):
+            name_accounts[key] = [name_accounts[key]]
+        name_accounts[key].append(balance_dict[key])
+
+    else:
+        # if the key doesn't exist - add with value from balance dict
+        name_accounts[key] = balance_dict[key]
+
+bank_acounts = {}
+for key, value in name_accounts.items():
+    print(key, value)
+    bank_object = Account(key,value[0],value[1])
+    bank_acounts[key] = bank_object
+
+print(bank_acounts)
+
+

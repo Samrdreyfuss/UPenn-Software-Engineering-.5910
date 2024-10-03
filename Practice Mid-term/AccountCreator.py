@@ -1,8 +1,8 @@
+# https://www.geeksforgeeks.org/python-cross-mapping-of-two-dictionary-value-lists/
+
 from Account import *
 from AccountManager import *
 
-import os
-print(os.getcwd())
 
 class AccountCreator(object):
     """"A class for loading bank account information from a file, storing it in a dictionary,
@@ -36,7 +36,6 @@ class AccountCreator(object):
         Example:
         1,234.5,6352.89,1,97.60
 
-
         Step 3:
         For the Withdrawals file, withdraw the given amounts from the given accounts. The accounts from which
         you're withdrawing are found in the bank_accounts dictionary you created in step 1.
@@ -47,18 +46,82 @@ class AccountCreator(object):
         1,56.3,72.1
         '''
 
-        bank_accounts = {}
 
-        with open('accounts.txt', 'r') as account_names:
+        with open(accounts, 'r') as account_names:
             lines = account_names.readlines()
-            lines = lines.strip()
-            lines = lines.replace('|',',')
 
+        bank_accounts = {}
         for name in lines:
-            key = 1
-            bank_accounts[key] = value
+            # remove | and replace with comma
+            name = name.replace('|', ',')
+            # strip white space
+            name = name.strip()
+            name = name.replace(' ', '')
+
+            # convert the line to a dictionary entry
+            split_line = name.split(',')
+            name = [split_line[0]] + split_line[1:]
+            bank_accounts[name[0]] = ', '.join(name[1:])
+
+        # all deposit logic
+        with open(deposits, 'r') as deposit_amounts:
+            lines = deposit_amounts.readlines()
+
+            deposit_dictionary = {}
+            for account in lines:
+                # strip white space
+                account = account.strip()
+
+                # convert the line to a dictionary entry
+                account_split_line = account.split(',')
+                account_summation_list = account_split_line[1:]
+                account_total = 0
+                for deposit in account_summation_list:
+                    # convert to float
+                    deposit = float(deposit)
+                    account_total += deposit
+                    account_total = round(account_total, 2)
+
+                    # convert the line to a dictionary entry
+                deposit_dictionary[account_split_line[0]] = account_total
+
+        # all withdrawn logic
+        with open(withdrawals, 'r') as withdrawl_amounts:
+            lines = withdrawl_amounts.readlines()
+
+            withdrawl_dictionary = {}
+            for account in lines:
+                # strip white space
+                account = account.strip()
+
+                # convert the line to a dictionary entry
+                account_split_line = account.split(',')
+                account_summation_list = account_split_line[1:]
+                account_total = 0
+                for withdrawl in account_summation_list:
+                    # convert to float
+                    withdrawl = float(withdrawl)
+                    account_total += withdrawl
+                    account_total = round(account_total, 2)
+
+                    # convert the line to a dictionary entry
+                withdrawl_dictionary[account_split_line[0]] = account_total
+
+        # subtract the withdrawl dictionary from the deposit dictionary:
+        balance_dict = {key: round(deposit_dictionary[key] - withdrawl_dictionary[key], 2) for key in deposit_dictionary
+                        if key in withdrawl_dictionary}
+
+        # map balance_dict onto the bank_accounts dictionary and also convert the values into a list
+        for key in balance_dict:
+            if key in bank_accounts:
+                if not isinstance(bank_accounts[key], list):
+                    bank_accounts[key] = [bank_accounts[key]]
+                bank_accounts[key].append(balance_dict[key])
+
+            else:
+                # if the key doesn't exist - add with value from balance dict
+                bank_accounts[key] = balance_dict[key]
 
 
-        return bank_accounts
-
+    for item in bank_accounts:
 
