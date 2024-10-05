@@ -3,16 +3,12 @@
 from Account import *
 from AccountManager import *
 
-
 class AccountCreator(object):
     """"A class for loading bank account information from a file, storing it in a dictionary,
     and calculating the account balance.
     """
 
     # We do not have an __init__ function and will call the default constructor.
-    accounts = 'acounts.txt'
-    deposits = 'deposits.csv'
-    withdrawals = 'withdrawals'
 
     def init_bank_accounts(self, accounts, deposits, withdrawals):
         '''
@@ -51,85 +47,83 @@ class AccountCreator(object):
 
         # step 1:
 
-        with open('accounts.txt', 'r') as account_names:
-            lines = account_names.readlines()
+        bank_acounts = {}
 
-        name_accounts = {}
-        for name in lines:
-            # remove | and replace with comma
-            name = name.replace('|', ',')
-            # strip white space
-            name = name.strip()
-            name = name.replace(' ', '')
+        account_lines = self.init_file(accounts)
 
-            # convert the line to a dictionary entry
-            split_line = name.split(',')
-            # print(split_line[1:])
-            # name = [split_line[0]] + split_line[1:]
-            name_accounts[split_line[0]] = split_line[1:]
+        for line in account_lines:
+            line = line.strip()
+            account_info = line.split('|')
+            account_number = account_info[0].strip()
 
-        bank_accounts = {}
-        for key, value in name_accounts.items():
-            bank_object = Account(key, value[0], value[1])
-            bank_accounts[key] = bank_object
-            # bank_object.balance = value[2]
+            # get first name
+            first_name = account_info[1].strip()
 
-        # Step 2: all deposit logic
-        with open('deposits.csv', 'r') as deposit_amounts:
-            lines = deposit_amounts.readlines()
+            # get last name
+            last_name = account_info[2].strip()
 
-            deposit_dictionary = {}
-            for account in lines:
-                # strip white space
-                account = account.strip()
+            # create an instance of account and stor it in a bank_accounts dict:
+            bank_acounts[account_number] = Account(account_number,first_name,last_name)
 
-                # convert the line to a dictionary entry
-                account_split_line = account.split(',')
-                account_summation_list = account_split_line[1:]
-                account_total = 0
-                for deposit in account_summation_list:
-                    # convert to float
-                    deposit = float(deposit)
-                    account_total += deposit
-                    account_total = round(account_total, 2)
+        # load deposit file
+        deposit_lines = self.init_file(deposits)
 
-                    # convert the line to a dictionary entry
-                deposit_dictionary[account_split_line[0]] = account_total
+        for line in deposit_lines:
+            line = line.strip()
+            deposit_info = line.strip()
+            account_number = deposit_info[0].strip()
 
-        # Step 3: all withdrawn logic
-        # all withdrawn logic
-        with open('withdrawals.csv', 'r') as withdrawl_amounts:
-            lines = withdrawl_amounts.readlines()
+            # get list of deposits
+            deposit_list = deposit_info[1:]
 
-            withdrawl_dictionary = {}
-            for account in lines:
-                # strip white space
-                account = account.strip()
+            # convert list to numeric
+            deposit_list = [float(i) for i in deposit_list]
 
-                # convert the line to a dictionary entry
-                account_split_line = account.split(',')
-                account_summation_list = account_split_line[1:]
-                account_total = 0
-                for withdrawl in account_summation_list:
-                    # convert to float
-                    withdrawl = float(withdrawl)
-                    account_total += withdrawl
-                    account_total = round(account_total, 2)
+            # get total deposit amount
+            tot_deposit_amount = sum(deposit_list)
 
-                    # convert the line to a dictionary entry
-                withdrawl_dictionary[account_split_line[0]] = account_total
+            # creat instance of AccountManager
+            account_manager = AccountManager()
 
-        # subtract the withdrawl dictionary from the deposit dictionary:
-        balance_dict = {key: round(deposit_dictionary[key] - withdrawl_dictionary[key], 2) for key in deposit_dictionary
-                        if key in withdrawl_dictionary}
+            #deposit amount
+            account_manager.deposit(bank_acounts, account_number, tot_deposit_amount)
 
-        # map balance_dict onto the bank_accounts dictionary and also convert the values into a list
-        for key in bank_accounts:
-            if key in balance_dict:
-                bank_object = bank_accounts[key]
-                bank_object.balance = balance_dict[key]
+        # load withdrawls file
+        withdrawal_lines = self.init_file(withdrawals)
+        for line in withdrawal_lines:
+            line = line.strip()
+            withdrawal_info = line.split(',')
+            account_number = withdrawal_info[0].strip()
 
-        return bank_accounts
+            # get list of withdrawls
+            withdrawal_list = withdrawal_info[1:]
+
+            #get list of withdrawls
+            withdrawal_list = [float(i) for i in withdrawal_list]
+
+            # get total withdrawl amount:
+            tot_withdrawl_amount = sum(withdrawal_list)
+
+            #withdraw amount
+            account_manager.withdraw(bank_acounts,account_number,tot_withdrawl_amount)
+
+        return bank_acounts
+
+    def init_file(self,file):
+        '''
+        Loads the given file and returns the lines as a list
+        Args:
+            file:
+
+        Returns:
+
+        '''
+
+        f = open(file,'r')
+        lines = f.readlines()
+        f.close
+
+        return lines
 
 
 

@@ -122,5 +122,7 @@ for key in bank_acounts:
         bank_object = bank_acounts[key]
         bank_object.balance = balance_dict[key]
 
+print(type(balance_dict))
+
 print(next(iter(bank_acounts.values())))
 
