@@ -47,7 +47,7 @@ class AccountCreator(object):
 
         # step 1:
 
-        bank_acounts = {}
+        bank_accounts = {}
 
         account_lines = self.init_file(accounts)
 
@@ -63,14 +63,14 @@ class AccountCreator(object):
             last_name = account_info[2].strip()
 
             # create an instance of account and stor it in a bank_accounts dict:
-            bank_acounts[account_number] = Account(account_number,first_name,last_name)
+            bank_accounts[account_number] = Account(account_number,first_name,last_name)
 
         # load deposit file
         deposit_lines = self.init_file(deposits)
 
         for line in deposit_lines:
             line = line.strip()
-            deposit_info = line.strip()
+            deposit_info = line.split(',')
             account_number = deposit_info[0].strip()
 
             # get list of deposits
@@ -86,10 +86,11 @@ class AccountCreator(object):
             account_manager = AccountManager()
 
             #deposit amount
-            account_manager.deposit(bank_acounts, account_number, tot_deposit_amount)
+            account_manager.deposit(bank_accounts, account_number, tot_deposit_amount)
 
         # load withdrawls file
         withdrawal_lines = self.init_file(withdrawals)
+
         for line in withdrawal_lines:
             line = line.strip()
             withdrawal_info = line.split(',')
@@ -105,9 +106,9 @@ class AccountCreator(object):
             tot_withdrawl_amount = sum(withdrawal_list)
 
             #withdraw amount
-            account_manager.withdraw(bank_acounts,account_number,tot_withdrawl_amount)
+            account_manager.withdraw(bank_accounts,account_number,tot_withdrawl_amount)
 
-        return bank_acounts
+        return bank_accounts
 
     def init_file(self,file):
         '''

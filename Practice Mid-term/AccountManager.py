@@ -37,7 +37,7 @@ class AccountManager(object):
         if account == None:
             print("Sorry, that account doesn't exist.")
             return
-        if (amount > amount.balance):
+        if (amount > account.balance):
             raise RuntimeError('Amount greater than available balance')
 
         account.balance -= amount
@@ -135,7 +135,7 @@ class AccountManager(object):
                                         int(item[0]), reverse=reverse)
 
         else:
-            sorted_items = sorted(bank_accounts_items,key=lambda item getattr(item[1],sort_type),reverse=reverse)
+            sorted_items = sorted(bank_accounts_items,key=lambda item: getattr(item[1],sort_type),reverse=reverse)
 
         return sorted_items
 
