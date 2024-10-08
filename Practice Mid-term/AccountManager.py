@@ -11,11 +11,16 @@ class AccountManager(object):
 
     # We do not have an __init__ function and will call the default constructor.
 
+    # all methods use self as they are in the AccountManager class
+
     def round_balance(self, bank_accounts, account_number):
         '''Rounds the given amount to two decimal places.
         '''
 
+        # account number as key to find account - the below syntax RAISES AN ERROR if the key doesn't exist
         account = bank_accounts[account_number]
+
+        # set balance with new rounded number
         account.balance = round(account.balance, 2)
 
     def get_account(self, bank_accounts, account_number):
@@ -23,6 +28,7 @@ class AccountManager(object):
         If the account doesn't exist, returns None
         '''
 
+        # account number as key to find account - the below DOES NOT RAISE AN ERROR if the key doesn't exist
         return bank_accounts.get(account_number)
 
     def withdraw(self, bank_accounts, account_number, amount):
@@ -33,13 +39,19 @@ class AccountManager(object):
         Prints the new balance.
         '''
 
+        # call get_account method in this funtion
         account = self.get_account(bank_accounts, account_number)
+
+        # account value checking (either None or withdraw amount is more than balance)
         if account == None:
             print("Sorry, that account doesn't exist.")
+            # the below return will return None
             return
+
         if (amount > account.balance):
             raise RuntimeError('Amount greater than available balance')
 
+        # change account balance then call rounding function within account_manager class
         account.balance -= amount
         self.round_balance(bank_accounts,account_number)
 
@@ -131,8 +143,7 @@ class AccountManager(object):
         # Hint: Return a sorted list of tuples
 
         if sort_type == "account_number":
-            sorted_items = sorted(bank_accounts.items(), key=lambda  item:
-                                        int(item[0]), reverse=reverse)
+            sorted_items = sorted(bank_accounts.items(), key=lambda  item: int(item[0]), reverse=reverse)
 
         else:
             sorted_items = sorted(bank_accounts_items,key=lambda item: getattr(item[1],sort_type),reverse=reverse)

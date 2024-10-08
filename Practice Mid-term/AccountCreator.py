@@ -47,13 +47,22 @@ class AccountCreator(object):
 
         # step 1:
 
+        # create empty dictionary for bank accounts
         bank_accounts = {}
 
+        # call helper function (within account creator class) which reads all ACCOUNTS file lines to a single string
         account_lines = self.init_file(accounts)
 
+        # loop through each line in account_lines list
         for line in account_lines:
+
+            # strip \n and empty space
             line = line.strip()
+
+            # split the line by bar
             account_info = line.split('|')
+
+            # define account_number as
             account_number = account_info[0].strip()
 
             # get first name
@@ -62,27 +71,35 @@ class AccountCreator(object):
             # get last name
             last_name = account_info[2].strip()
 
-            # create an instance of account and stor it in a bank_accounts dict:
+            # create an instance of account and store it in a bank_accounts dict:
             bank_accounts[account_number] = Account(account_number,first_name,last_name)
 
-        # load deposit file
+        # call helper function (within account creator class) which reads all DEPOSIT file lines to a single string
         deposit_lines = self.init_file(deposits)
 
+
+        # for each line in deposit lines
         for line in deposit_lines:
+
+            # strip out white space
             line = line.strip()
+
+            # split by comma
             deposit_info = line.split(',')
+
+            # get account number
             account_number = deposit_info[0].strip()
 
             # get list of deposits
             deposit_list = deposit_info[1:]
 
-            # convert list to numeric
+            # convert list to numeric via list comprehension -> list
             deposit_list = [float(i) for i in deposit_list]
 
             # get total deposit amount
             tot_deposit_amount = sum(deposit_list)
 
-            # creat instance of AccountManager
+            # create instance of AccountManager
             account_manager = AccountManager()
 
             #deposit amount
