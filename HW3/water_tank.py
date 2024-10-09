@@ -772,7 +772,6 @@ def main():
             # alternate between players and witch first_move and opponent_tank variables
             first_move = 'Human'
             opponent_tank = human_tank
-            computer_cards = [5, 'DMT', 'DMT']
             computer_tank, human_tank = computer_play(computer_tank, computer_cards, water_cards_pile, power_cards_pile,
                                                       opponent_tank)
             tank = computer_tank
