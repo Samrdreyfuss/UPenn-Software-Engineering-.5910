@@ -15,6 +15,7 @@ class Expense(object):
         This method doesn’t return anything.
         """
         # this takes the initialized attribute amount and adds the amount argument
+
         self.amount += amount
 
     def deduct_amount(self, amount):

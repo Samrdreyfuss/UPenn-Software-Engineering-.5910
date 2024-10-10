@@ -19,8 +19,15 @@ class ExpensesManager(object):
         this method.)
         """
 
-        # TODO insert your code
-        raise NotImplementedError  # remove this line and replace with your code
+        # obtain expene from dictionary
+        expense_obtained = expenses.get(expense_type)
+
+        # determine if the user is looking for an expense type which doesn't exist
+        if expense_obtained is None:
+            print('The expense you are looking for is not available.')
+
+        return expense_obtained
+
 
     def add_expense(self, expenses, expense_type, value):
         """If the expense_type already exists in the given expenses dictionary, add the value to the associated
@@ -34,8 +41,22 @@ class ExpensesManager(object):
         This method doesn’t return anything.
         """
 
-        # TODO insert your code
-        raise NotImplementedError  # remove this line and replace with your code
+        # call get expense method to get expense object
+        expense = self.get_expense(expenses, expense_type)
+
+
+        # if expense doesn't exist, create expense object
+        if expense == None:
+            expense = Expense(expense_type, value)
+
+        # create an instance of account and store it in a bank_accounts dict:
+        if expense_type in expenses:
+            expenses[expense_type].amount += value
+
+        else:
+            expenses[expense_type] = expense
+
+        print('Updated Expense:',expense)
 
     def deduct_expense(self, expenses, expense_type, value):
         """From the given expenses dictionary, get the Expense object associated with the given expense_type and

@@ -1,3 +1,5 @@
+from pandas.core.config_init import pc_max_info_rows_doc
+
 from Expense import *
 
 
@@ -40,5 +42,69 @@ class ExpensesLoader(object):
         Note: You are not expected to handle negative numbers in your code
         """
 
-        # TODO insert your code
-        raise NotImplementedError  # remove this line and replace with your code
+        # The expenses dictionary datastructure is passes as argument so no need to define here
+
+        # call helper function (within import expenses class) which reads the expense file lines to a single string
+        expense_lines = self.init_file(file)
+
+        # loop through each line in account_lines list
+        for line in expense_lines:
+
+            # strip \n and empty space
+            line = line.strip()
+
+            # get rid of spaces via replace method
+            expense_info = line.replace(' ','')
+
+
+            # split the line by semicolon
+            expense_info = expense_info.split(':')
+
+            try:
+                if expense_info[1] == '':
+                    continue
+
+                elif expense_info[0] == '':
+                    continue
+            except:
+                continue
+
+            # define expense category as
+            expense_category = expense_info[0].strip()
+
+            # get expense amount and convert to float
+            expense_amount = float(expense_info[1].strip())
+
+
+
+            # call object
+            
+            # create an instance of account and store it in a bank_accounts dict:
+            if expense_category in expenses.keys():
+                expense_object = expenses[expense_category]
+                expense_object.add_amount(expense_amount)
+
+            else:
+                #expense_object = expenses[expense_category]
+                # need to add_expense
+                expenses[expense_category] = Expense(expense_category, expense_amount)
+
+
+
+        #print(expenses)
+
+
+    def init_file(self, file):
+        '''
+        Loads the given file and returns the lines as a list
+        Args:
+            file:
+
+        Returns:
+        '''
+
+        f = open(file, 'r')
+        lines = f.readlines()
+        f.close
+
+        return lines
